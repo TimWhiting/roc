@@ -3251,7 +3251,7 @@ fn load_platform_module<'a>(
             let parse_start = Instant::now();
             let bytes = arena.alloc(bytes_vec);
             let parse_state = roc_parse::state::State::new(bytes);
-            let parsed = roc_parse::module::parse_header(arena, parse_state.clone());
+            let parsed = roc_parse::module::parse_header(arena, parse_state);
             let parse_header_duration = parse_start.elapsed();
 
             // Insert the first entries for this module's timings
@@ -3321,7 +3321,7 @@ fn load_builtin_module_help<'a>(
     let filename = PathBuf::from(filename);
 
     let parse_state = roc_parse::state::State::new(src_bytes.as_bytes());
-    let parsed = roc_parse::module::parse_header(arena, parse_state.clone());
+    let parsed = roc_parse::module::parse_header(arena, parse_state);
 
     match parsed {
         Ok((ast::Module::Interface { header }, parse_state)) => {
@@ -3569,7 +3569,7 @@ fn parse_header<'a>(
 ) -> Result<(ModuleId, Msg<'a>), LoadingProblem<'a>> {
     let parse_start = Instant::now();
     let parse_state = roc_parse::state::State::new(src_bytes);
-    let parsed = roc_parse::module::parse_header(arena, parse_state.clone());
+    let parsed = roc_parse::module::parse_header(arena, parse_state);
     let parse_header_duration = parse_start.elapsed();
 
     // Insert the first entries for this module's timings
@@ -5868,7 +5868,7 @@ fn to_file_problem_report(filename: &Path, error: io::ErrorKind) -> String {
     buf
 }
 
-fn to_import_cycle_report<'a>(
+fn to_import_cycle_report(
     module_ids: ModuleIds,
     all_ident_ids: IdentIdsByModule,
     import_cycle: Vec<ModuleId>,
